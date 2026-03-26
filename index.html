@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rida Kadri — Full-Stack Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #f9f8f6;
+    --bg2: #f2f0ec;
+    --white: #ffffff;
+    --border: #e5e2db;
+    --text: #1a1917;
+    --muted: #6b6860;
+    --faint: #9c9890;
+    --accent: #2563eb;
+    --accent-light: #eff4ff;
+    --accent-mid: #bfcdfa;
+    --nav-w: 220px;
+    --content-max: 720px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--nav-w);
+    flex-shrink: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    padding: 3rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    background: var(--white);
+    z-index: 50;
+  }
+
+  .sidebar-logo {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    flex: 1;
+  }
+
+  .nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.18s;
+  }
+
+  .nav-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: background 0.18s;
+  }
+
+  .nav-links a:hover { color: var(--text); background: var(--bg2); }
+  .nav-links a:hover .nav-dot { background: var(--accent); }
+  .nav-links a.active { color: var(--accent); background: var(--accent-light); font-weight: 600; }
+  .nav-links a.active .nav-dot { background: var(--accent); }
+
+  .sidebar-footer {
+    font-size: 0.72rem;
+    color: var(--faint);
+    line-height: 1.6;
+  }
+
+  /* MAIN */
+  .main {
+    margin-left: var(--nav-w);
+    flex: 1;
+    padding: 0 3.5rem;
+    max-width: calc(var(--nav-w) + var(--content-max) + 7rem);
+  }
+
+  .section {
+    padding: 2.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .section:last-of-type { border-bottom: none; }
+
+  /* HERO */
+  #about { padding-top: 4.5rem; }
+
+  .hero-greeting {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Lora', serif;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.22s forwards;
+  }
+
+  .hero-name em { font-style: italic; color: var(--accent); }
+
+  .hero-bio {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 540px;
+    line-height: 1.85;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.36s forwards;
+  }
+  .hero-bio strong { color: var(--text); font-weight: 600; }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.48s forwards;
+  }
+
+  .hero-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .hero-meta-item svg {
+    width: 13px; height: 13px;
+    stroke: var(--faint);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  .hero-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.58s forwards;
+  }
+
+.hero-layout {
+  display: flex;
+  gap: 3rem;
+}
+
+.hero-photo {
+  width: 280px;
+  height: 280px;
+}
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.4rem;
+    border-radius: 8px;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.18s;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
+  /* SECTION HEADING */
+  .section-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-heading {
+    font-family: 'Lora', serif;
+    font-size: clamp(1.55rem, 3vw, 2rem);
+    font-weight: 400;
+    line-height: 1.25;
+    margin-bottom: 2.5rem;
+    color: var(--text);
+  }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--white);
+    margin-bottom: 2rem;
+  }
+
+  .stat {
+    padding: 1.5rem 1rem;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+  .stat:last-child { border-right: none; }
+
+  .stat-number {
+    font-family: 'Lora', serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--faint);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* EXPERIENCE */
+  .exp-item {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 0 2rem;
+    padding: 2.25rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .exp-item:first-child { border-top: none; }
+
+  .exp-date {
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--faint);
+    line-height: 1.5;
+    padding-top: 0.2rem;
+  }
+
+  .exp-badge {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-light);
+    border: 1px solid var(--accent-mid);
+    padding: 0.18rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .exp-company {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 0.2rem;
+  }
+
+  .exp-role {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.15rem;
+  }
+
+  .exp-loc {
+    font-size: 0.76rem;
+    color: var(--faint);
+    margin-bottom: 1rem;
+  }
+
+  .exp-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .exp-bullets li {
+    font-size: 0.875rem;
+    color: var(--muted);
+    padding-left: 1.1rem;
+    position: relative;
+    line-height: 1.72;
+  }
+
+  .exp-bullets li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--accent-mid);
+    font-weight: 600;
+  }
+
+  .exp-bullets li strong { color: var(--text); font-weight: 600; }
+
+  /* SKILLS */
+  .skills-table {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  .skill-row {
+    display: grid;
+    grid-template-columns: 155px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 1.5rem;
+    align-items: start;
+    transition: background 0.15s;
+  }
+  .skill-row:last-child { border-bottom: none; }
+  .skill-row:hover { background: var(--bg); }
+
+  .skill-cat-name {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 0.3rem;
+  }
+
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .tag {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.7rem;
+    border-radius: 6px;
+    transition: all 0.15s;
+    cursor: default;
+  }
+  .tag:hover { background: var(--accent-light); border-color: var(--accent-mid); color: var(--accent); }
+
+  /* PROJECTS */
+  .section-projects .section-heading { margin-bottom: 0.75rem; }
+
+  .projects-intro {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 52ch;
+    margin-bottom: 2.25rem;
+  }
+
+  .projects-list { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .project-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0;
+    transition: all 0.2s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .project-card:hover {
+    border-color: var(--accent-mid);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(37,99,235,0.09);
+  }
+
+  .project-card-inner {
+    padding: 1.65rem 2rem 1.75rem;
+    border-left: 3px solid var(--accent);
+  }
+
+  .project-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 0.28rem 0.55rem;
+    border-radius: 6px;
+    margin-bottom: 0.65rem;
+  }
+
+  .project-name {
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .project-impact {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.55;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project-desc {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.78;
+    margin-bottom: 1.05rem;
+  }
+
+  .project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .project-stack-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+    width: 100%;
+    margin-bottom: 0.15rem;
+  }
+
+  /* EDUCATION */
+  .edu-item {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 0 2rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .edu-item:first-child { border-top: none; }
+
+  .edu-year {
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--faint);
+    padding-top: 0.2rem;
+  }
+
+  .edu-degree { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.2rem; }
+  .edu-school { font-size: 0.85rem; color: var(--muted); }
+
+  /* CONTACT */
+  .section-contact .section-heading { margin-bottom: 0.65rem; }
+
+  .contact-intro {
+    font-size: 0.975rem;
+    color: var(--muted);
+    line-height: 1.85;
+    max-width: 56ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-links {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 0.65rem;
+    padding: 1.1rem 1.1rem 1.15rem;
+    border-right: 1px solid var(--border);
+    border-bottom: none;
+    text-decoration: none;
+    transition: background 0.15s;
+    min-width: 0;
+  }
+  .contact-link:nth-child(4n) { border-right: none; }
+  .contact-link:hover { background: var(--accent-light); }
+
+  .contact-link-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .contact-link-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  .contact-link-val {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  .contact-arrow {
+    flex-shrink: 0;
+    align-self: flex-start;
+    font-size: 0.85rem;
+    color: var(--faint);
+    line-height: 1.2;
+    padding-top: 0.15rem;
+    transition: transform 0.15s, color 0.15s;
+  }
+  .contact-link:hover .contact-arrow { transform: translateX(3px); color: var(--accent); }
+
+  @media (max-width: 960px) {
+    .contact-links {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .contact-link {
+      border-right: 1px solid var(--border);
+      border-bottom: none;
+    }
+    .contact-link:nth-child(2n) {
+      border-right: none;
+    }
+    .contact-link:nth-child(-n + 2) {
+      border-bottom: 1px solid var(--border);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .contact-links {
+      grid-template-columns: 1fr;
+    }
+    .contact-link {
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .contact-link:last-child {
+      border-bottom: none;
+    }
+    .contact-link-val { font-size: 0.82rem; }
+  }
+
+  footer {
+    padding: 2.5rem 0 3rem;
+    font-size: 0.73rem;
+    color: var(--faint);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* MOBILE */
+  @media (max-width: 780px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 0 1.5rem; }
+    .exp-item, .edu-item { grid-template-columns: 1fr; gap: 0.4rem; }
+    .skill-row { grid-template-columns: 1fr; gap: 0.5rem; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(2) { border-right: none; }
+    .stat:nth-child(5) { border-right: none; grid-column: span 2; }
+  }
+
+  /* HERO TWO-COLUMN */
+  .hero-cols {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .hero-photo-col {
+    flex-shrink: 0;
+    align-self: stretch;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .hero-photo-big {
+    width: 280px;
+    height: 100%;
+    min-height: 380px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    display: block;
+  }
+
+  @media (max-width: 780px) {
+    .hero-cols {
+      grid-template-columns: 1fr;
+    }
+    .hero-photo-big {
+      width: 100%;
+      height: 280px;
+      min-height: unset;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <a class="sidebar-logo" href="#about">RK</a>
+  <ul class="nav-links">
+    <li><a href="#about" class="active"><span class="nav-dot"></span>About</a></li>
+    <li><a href="#experience"><span class="nav-dot"></span>Experience</a></li>
+    <li><a href="#skills"><span class="nav-dot"></span>Skills</a></li>
+    <li><a href="#projects"><span class="nav-dot"></span>Projects</a></li>
+    <li><a href="#education"><span class="nav-dot"></span>Education</a></li>
+    <li><a href="#contact"><span class="nav-dot"></span>Contact</a></li>
+  </ul>
+  <div class="sidebar-footer">
+    Waterloo, Canada<br/>Open to new roles
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ABOUT / HERO -->
+  <!-- ABOUT / HERO -->
+  <section class="section" id="about">
+    <div class="hero-cols">
+      <!-- LEFT: text -->
+      <div class="hero-text">
+        <p class="hero-greeting">Hi, I'm Rida 👋</p>
+        <h1 class="hero-name">Full-Stack Engineer<br/>who ships at <em>real scale.</em></h1>
+        <p class="hero-bio">
+          I'm <strong>Ridamayeen Kadri</strong> — a full-stack engineer with <strong>6+ years</strong> of experience building products that touch millions of users.
+          Currently at <strong>NCR Voyix</strong> in Waterloo, I lead frontend delivery with Next.js, React &amp; TypeScript,
+          and own the backend with Node.js microservices hosted on Azure Kubernetes Service.
+          I care about the details that compound — test coverage, zero-downtime deploys, and mentoring engineers in ways that stick.
+        </p>
+        <div class="hero-meta">
+          <span class="hero-meta-item">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            Waterloo, Canada
+          </span>
+          <span class="hero-meta-item">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            NCR Voyix · Senior SDE
+          </span>
+          <span class="hero-meta-item">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            ridakadri14@gmail.com
+          </span>
+        </div>
+        <div class="hero-links">
+          <a class="btn btn-primary" href="mailto:ridakadri14@gmail.com">Say hello →</a>
+          <a class="btn btn-ghost" href="https://linkedin.com/in/ridakadri14" target="_blank">LinkedIn</a>
+          <a class="btn btn-ghost" href="https://github.com/Rida-Kadri" target="_blank">GitHub</a>
+        </div>
+      </div>
+      <!-- RIGHT: photo -->
+      <div class="hero-photo-col">
+        <img class="hero-photo-big" src="rida-hero.png" alt="Rida Kadri" />
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section style="padding: 1.75rem 0 2rem; border-bottom: 1px solid var(--border);">
+    <div class="stats-row fade-in">
+      <div class="stat">
+        <div class="stat-number">6+</div>
+        <div class="stat-label">Years Exp.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">12+</div>
+        <div class="stat-label">Microservices</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">~40%</div>
+        <div class="stat-label">Load Time Cut</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">~45%</div>
+        <div class="stat-label">CI Time Saved</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">4+</div>
+        <div class="stat-label">Teams Adopted</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="section" id="experience">
+    <p class="section-tag fade-in">Experience</p>
+    <h2 class="section-heading fade-in">Where I've worked</h2>
+
+    <div class="exp-item fade-in">
+      <div>
+        <div class="exp-date">Mar 2021<br/>— Present</div>
+        <span class="exp-badge">Current</span>
+      </div>
+      <div>
+        <div class="exp-company">NCR Voyix Corporation</div>
+        <div class="exp-role">Senior Software Developer</div>
+        <div class="exp-loc">Waterloo, Canada</div>
+        <ul class="exp-bullets">
+          <li>Owned the frontend architecture of a <strong>Next.js platform</strong> in NCR Voyix's ecosystem touching millions of users across banking & CSR — drove SSR/ISR rendering decisions that reduced average page load time by <strong>~40%</strong>.</li>
+          <li>Built a reusable <strong>React + TypeScript component library</strong> adopted by 4+ downstream teams — cut feature delivery cycle time by <strong>~30%</strong> and eliminated 2–3 extra revision rounds per design handoff. All components meet <strong>WCAG 2.2 AA</strong>, validated through Axe audits.</li>
+          <li>Introduced <strong>Turborepo</strong> to consolidate 8+ fragmented repos into a single monorepo — unified TS configs, reduced CI build times by <strong>~45%</strong>, saving ~3–4 hours/team/week.</li>
+          <li>Built and maintained <strong>12+ Node.js microservices</strong> with MySQL on AKS — reduced p95 latency by <strong>~30%</strong> and cut frontend-blocking API errors by <strong>~25%</strong>.</li>
+          <li>Championed engineering quality across a team of 6 — maintained <strong>&gt;80% test coverage</strong>, owned CI/CD for zero-downtime deploys, and mentored 3 junior engineers who each cut PR cycle time by ~20% within 3 months.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item fade-in">
+      <div>
+        <div class="exp-date">Jul 2018<br/>— Jul 2019</div>
+      </div>
+      <div>
+        <div class="exp-company">Hajj Community</div>
+        <div class="exp-role">Full-Stack Developer</div>
+        <div class="exp-loc">Remote</div>
+        <ul class="exp-bullets">
+          <li>Built a cross-platform <strong>iOS & Android mobile app</strong> with Ionic (Angular/JS) + Node.js/Express + MySQL REST APIs, serving <strong>thousands of users globally</strong>.</li>
+          <li>Created a reusable component library and modular service layer, reducing future feature development time by <strong>~25%</strong>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="section" id="skills">
+    <p class="section-tag fade-in">Skills</p>
+    <h2 class="section-heading fade-in">What I work with</h2>
+
+    <div class="skills-table fade-in">
+      <div class="skill-row">
+        <span class="skill-cat-name">Frontend</span>
+        <div class="skill-tags">
+          <span class="tag">React</span><span class="tag">Next.js</span><span class="tag">TypeScript</span>
+          <span class="tag">JavaScript</span><span class="tag">Redux (RTK)</span><span class="tag">React Native</span>
+          <span class="tag">Angular</span><span class="tag">HTML5 / CSS3</span><span class="tag">Material UI</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-cat-name">Backend</span>
+        <div class="skill-tags">
+          <span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">Python 3</span>
+          <span class="tag">REST APIs</span><span class="tag">GraphQL</span><span class="tag">Java</span>
+          <span class="tag">Microservices</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-cat-name">Cloud & DevOps</span>
+        <div class="skill-tags">
+          <span class="tag">Azure (AKS)</span><span class="tag">Docker</span>
+          <span class="tag">GitHub Actions</span><span class="tag">GitLab CI/CD</span>
+          <span class="tag">Turborepo</span><span class="tag">Monorepo</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-cat-name">Testing</span>
+        <div class="skill-tags">
+          <span class="tag">Jest</span><span class="tag">Cypress</span>
+          <span class="tag">React Testing Library</span><span class="tag">Enzyme</span>
+          <span class="tag">Axe (a11y)</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-cat-name">Databases</span>
+        <div class="skill-tags">
+          <span class="tag">MySQL</span><span class="tag">MongoDB</span><span class="tag">Oracle</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="section section-projects" id="projects">
+    <p class="section-tag fade-in">Projects</p>
+    <h2 class="section-heading fade-in">Shipped work that moved metrics</h2>
+
+    <div class="projects-list">
+      <article class="project-card fade-in">
+        <div class="project-card-inner">
+          <span class="project-badge">Research · ML · Video</span>
+          <h3 class="project-name">WatchItQuickly</h3>
+          <p class="project-impact">Surfaces the moments that matter in long live streams — no client download required.</p>
+          <p class="project-desc">A summarization engine that blends ML scoring with crowdsourcing to extract high-signal sub-clips. I implemented the core pipeline in Python, using custom data structures to keep throughput predictable as stream length and load grew.</p>
+          <span class="project-stack-label">Stack</span>
+          <div class="project-stack">
+            <span class="tag">Angular</span><span class="tag">Python</span><span class="tag">Django</span>
+            <span class="tag">Branch Matrix API</span><span class="tag">Machine Learning</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card fade-in">
+        <div class="project-card-inner">
+          <span class="project-badge">Enterprise · Design system</span>
+          <h3 class="project-name">NCR Component Library</h3>
+          <p class="project-impact">Adopted by 4+ teams; roughly ~30% faster feature delivery once teams standardized on the kit.</p>
+          <p class="project-desc">Production React + TypeScript components behind NCR Voyix banking experiences. Accessibility is built in — WCAG 2.2 AA patterns, Axe in CI, and screen-reader testing — so shipping fast did not mean shipping fragile UI.</p>
+          <span class="project-stack-label">Stack</span>
+          <div class="project-stack">
+            <span class="tag">React</span><span class="tag">TypeScript</span>
+            <span class="tag">WCAG 2.2 AA</span><span class="tag">Axe</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="project-card fade-in">
+        <div class="project-card-inner">
+          <span class="project-badge">Mobile · Full-stack</span>
+          <h3 class="project-name">Hajj Community App</h3>
+          <p class="project-impact">Cross-platform app for thousands of daily users on iOS and Android worldwide.</p>
+          <p class="project-desc">Ionic + Angular on the client, Node.js/Express and MySQL REST APIs on the server. Modular boundaries and shared modules made later features easier to land — roughly ~25% less time on typical feature builds after the foundation was in place.</p>
+          <span class="project-stack-label">Stack</span>
+          <div class="project-stack">
+            <span class="tag">Ionic</span><span class="tag">Angular</span>
+            <span class="tag">Node.js</span><span class="tag">MySQL</span><span class="tag">iOS / Android</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section class="section" id="education">
+    <p class="section-tag fade-in">Education</p>
+    <h2 class="section-heading fade-in">Where I studied</h2>
+
+    <div class="edu-item fade-in">
+      <div class="edu-year">2019 – 2020</div>
+      <div>
+        <div class="edu-degree">M.Eng. Computer Engineering</div>
+        <div class="edu-school">University of Waterloo, Ontario</div>
+      </div>
+    </div>
+
+    <div class="edu-item fade-in">
+      <div class="edu-year">2014 – 2018</div>
+      <div>
+        <div class="edu-degree">B.Eng. Computer Engineering</div>
+        <div class="edu-school">L.D. College of Engineering, India</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section section-contact" id="contact">
+    <p class="section-tag fade-in">Contact</p>
+    <h2 class="section-heading fade-in">Let's talk</h2>
+    <p class="contact-intro fade-in">
+      I'm always open to interesting conversations — whether it's a new role, a collaboration, or just a chat about engineering. Feel free to reach out.
+    </p>
+
+    <div class="contact-links fade-in">
+      <a class="contact-link" href="mailto:ridakadri14@gmail.com">
+        <div class="contact-link-body">
+          <div class="contact-link-label">Email</div>
+          <div class="contact-link-val">ridakadri14@gmail.com</div>
+        </div>
+        <span class="contact-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="contact-link" href="https://linkedin.com/in/ridakadri14" target="_blank" rel="noopener noreferrer">
+        <div class="contact-link-body">
+          <div class="contact-link-label">LinkedIn</div>
+          <div class="contact-link-val">linkedin.com/in/ridakadri14</div>
+        </div>
+        <span class="contact-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="contact-link" href="https://github.com/Rida-Kadri" target="_blank" rel="noopener noreferrer">
+        <div class="contact-link-body">
+          <div class="contact-link-label">GitHub</div>
+          <div class="contact-link-val">github.com/Rida-Kadri</div>
+        </div>
+        <span class="contact-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="contact-link" href="tel:+12269883047">
+        <div class="contact-link-body">
+          <div class="contact-link-label">Phone</div>
+          <div class="contact-link-val">226-988-3047</div>
+        </div>
+        <span class="contact-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <footer class="fade-in">Ridamayeen Kadri · Waterloo, Canada</footer>
+
+</main>
+
+<script>
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-35% 0px -60% 0px' });
+
+  sections.forEach(s => navObserver.observe(s));
+
+  // Scroll fade-in
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 55);
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+</script>
+</body>
+</html>
